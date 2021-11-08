@@ -1,0 +1,41 @@
+-------------------------------------------------------------------------------
+This API was designed to serve as an intermediate step between the 
+client-facing web application and the HouseCanary property/details API 
+endpoint. As such, it operates under the following assumptions:
+
+Firstly, the HouseCanary property/details endpoint which is documented to need 
+only the property's street address and zipcode as sufficient information to 
+fetch the details of a specific property continues to be upheld. 
+
+Secondly, in the course of a Hometap user filling out their property 
+information while interacting with the web application, the user is required to
+fill in their home's street address and zip code at a minimum. It is using this
+information that the web server may query the custom API endpoint.
+
+In the event that the HouseCanary property/details endpoint becomes deprecated
+or the HouseCanary API itself becomes defunct, the custom API may need to be
+modified or adjusted to accomodate the specific requirements of these third-
+party APIs.
+
+Related to this, a particular part of the implementation I had a more difficult
+time thinking of an approach to is the parsing of the third-party API response
+to find the relevant information. To me, this particular piece seems 
+unneccesarily verbose due to the use of nested ifs to dig into the nested 
+properties of the json data. In my mind, I knew that there is no particular 
+contract between the HouseCanary API endpoint and the custom API that maintains
+the structure of the HouseCanary response. I chose to include some simple 
+"logging" to provide some indication that something with the third-party API
+may have changed. I believe there must be cleaner and more robust means of
+handling the data and dealing with this type of situation.
+
+
+The crucial feature missing from my implementation is the notion of security,
+specifically the keeping of authentication needed to access these third-party
+APIs; credentials including API keys and secret keys. My approach 
+to this would be to configure environment variables on the system(s) on which
+the web server would be run. The server would fetch these environment variables
+on startup and presumably continue to use them while running. Appropriate error
+handling would need to be included in the event that the server fails to obtain
+the environment variables or in the situation in which authorization through
+those credentials have been revoked before or during server startup. As it is
+right now, I just have the server running locally.
